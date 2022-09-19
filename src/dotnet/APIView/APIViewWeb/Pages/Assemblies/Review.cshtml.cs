@@ -11,6 +11,7 @@ using APIViewWeb.Models;
 using APIViewWeb.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Configuration;
 
 namespace APIViewWeb.Pages.Assemblies
 {
@@ -29,18 +30,22 @@ namespace APIViewWeb.Pages.Assemblies
 
         public readonly UserPreferenceCache _preferenceCache;
 
+        private readonly IConfiguration _configuration;
+
         public ReviewPageModel(
             ReviewManager manager,
             BlobCodeFileRepository codeFileRepository,
             CommentsManager commentsManager,
             NotificationManager notificationManager,
-            UserPreferenceCache preferenceCache)
+            UserPreferenceCache preferenceCache,
+            IConfiguration configuration)
         {
             _manager = manager;
             _codeFileRepository = codeFileRepository;
             _commentsManager = commentsManager;
             _notificationManager = notificationManager;
             _preferenceCache = preferenceCache;
+            _configuration = configuration;
 
         }
 
@@ -71,6 +76,8 @@ namespace APIViewWeb.Pages.Assemblies
         public bool ShowDiffOnly { get; set; }
 
         public IEnumerable<ReviewModel> ReviewsForPackage { get; set; } = new List<ReviewModel>();
+
+        public readonly HashSet<string> approvers = new HashSet<string>();
 
         public async Task<IActionResult> OnGetAsync(string id, string revisionId = null)
         {
@@ -121,6 +128,16 @@ namespace APIViewWeb.Pages.Assemblies
             UsageSampleConversations = Comments.Threads.Count(t => t.Comments.First().IsUsageSampleComment);
             var filterPreference = _preferenceCache.GetFilterType(User.GetGitHubLogin(), Review.FilterType);
             ReviewsForPackage = await _manager.GetReviewsAsync(Review.ServiceName, Review.PackageDisplayName, filterPreference);
+
+            var approverConfig = _configuration["approvers"];
+            if (!string.IsNullOrEmpty(approverConfig))
+            {
+                foreach (var username in approverConfig.Split(","))
+                {
+                    approvers.Add(username);
+                }
+            }
+
             return Page();
         }
 
