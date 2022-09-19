@@ -29,7 +29,36 @@
                 <br>
                 <small class="text-muted">@Model.Review.PackageDisplayName</small>
             </p>
-            <div class="my-1">
+
+            <div class="dropdown d-inline-block my-1">
+                <a class="btn btn-light btn-sm border shadow-sm dropdown-toggle" href="#" role="button" data-toggle="dropdown">
+                    <i class="fa-solid fa-flag"></i>&nbsp;&nbsp;Request Approval
+                </a>
+                <div class="dropdown-menu dropdown-menu-right">
+                    <span class="dropdown-header">
+                        <p>&nbsp;Select users to request for review</p>
+                    </span>
+                    <span class="dropdown modal-dialog-scrollable">
+                        <form class ="selectpicker show-tick show-menu-arrow " data-style="btn-light btn-sm border" data-selected-text-format="value" data-live-search="true" data-size="10" data-width="100%" data-container="body" id="revisions-bootstraps-select" data-tick-icon="fa-solid fa-check">
+                            @foreach (var approver in Model.approvers) 
+                            {
+                                <span class="checkbox dropdown-item-text">
+                                    <label>
+                                        <input type="checkbox" checked="checked" id="">
+                                        &nbsp;@approver
+                                    </label>
+                                </span>
+                            }
+
+                            <span class="dropdown-item-text">
+                                <button class="btn btn-sm btn-light shadow-sm">Request</button>
+                                <button class="btn btn-sm btn-light shadow-sm">Request from all</button>
+                            </span>
+                        </form>
+                    </span>
+                </div>
+            </div>
+            <div class="my-1 ml-2">
                 @if (Model.Revision.Approvers.Count > 0)
                 {
                     var approvers = String.Join(", ", Model.Revision.Approvers);
