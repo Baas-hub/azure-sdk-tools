@@ -278,6 +278,15 @@ namespace APIViewWeb.Pages.Assemblies
             return RedirectToPage(new { id = id });
         }
 
+        public async Task<ActionResult> OnPostRequestReviewersAsync(string id, HashSet<string> reviewers)
+        {
+            // TODO: Email Notifications for those requested
+            var review = await _manager.GetReviewAsync(User, id);
+            review.requestedReviewers = reviewers;
+            review.approvalRequestedOn = DateTime.Now;
+            return RedirectToPage(new { id = id });
+        }
+
         public Dictionary<string, string> GetRoutingData(string diffRevisionId = null, bool? showDiffOnly = null, string revisionId = null)
         {
             var routingData = new Dictionary<string, string>();

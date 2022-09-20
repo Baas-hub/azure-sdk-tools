@@ -36,23 +36,28 @@
                 </a>
                 <div class="dropdown-menu dropdown-menu-right">
                     <span class="dropdown-header">
-                        <p>&nbsp;Select users to request for review</p>
+                        Select users to request for review
                     </span>
                     <span class="dropdown modal-dialog-scrollable">
-                        <form class ="selectpicker show-tick show-menu-arrow " data-style="btn-light btn-sm border" data-selected-text-format="value" data-live-search="true" data-size="10" data-width="100%" data-container="body" id="revisions-bootstraps-select" data-tick-icon="fa-solid fa-check">
+                        <form asp-resource="@Model.Review" asp-page-handler="RequestReviewers" method="post"
+                            class ="selectpicker show-tick show-menu-arrow " data-style="btn-light btn-sm border" data-selected-text-format="value" 
+                            data-live-search="true" data-size="10" data-width="100%" data-container="body" id="revisions-bootstraps-select" data-tick-icon="fa-solid fa-check">
+
                             @foreach (var approver in Model.approvers) 
                             {
+                                @* TODO: Sort by approver language/filter to approvers who work in Review's langauge *@
                                 <span class="checkbox dropdown-item-text">
                                     <label>
-                                        <input type="checkbox" checked="checked" id="">
-                                        &nbsp;@approver
+                                        <input type="checkbox" name="reviewers" value="@approver">&nbsp;&nbsp;
+                                        <img username="@approver" class="comment-icon align-self-start mr-2" height="28" width="28" />
+                                        @approver
                                     </label>
                                 </span>
                             }
 
                             <span class="dropdown-item-text">
-                                <button class="btn btn-sm btn-light shadow-sm">Request</button>
-                                <button class="btn btn-sm btn-light shadow-sm">Request from all</button>
+                                <button class="btn btn-sm btn-light shadow-sm" type="submit">Request</button>&nbsp;&nbsp;
+                                <button class="btn btn-sm btn-light shadow-sm" onclick="var r = document.getElementsByName('reviewers'); r.forEach((e) => e.checked = true);" type="submit">Request all</button>
                             </span>
                         </form>
                     </span>
@@ -78,13 +83,13 @@
                 @{
                     var popOverContent = $"<b>{Model.ActiveConversations}</b> active revision threads.<br><b>{Model.TotalActiveConversations}</b> total active threads.<br>"
                     + $"<b>Current Revision:</b> <em>{@Model.Revision.DisplayName}</em>";
-                                        @if (Model.DiffRevisionId != null)
+                                                                        @if (Model.DiffRevisionId != null)
                     {
                         popOverContent += $"<br><b>Current Diff:</b> <em>{@Model.DiffRevision?.DisplayName}</em>";
                     }
-                                        <button type="button" class="btn btn-info btn-sm shadow-sm" data-placement="bottom" data-trigger="focus" data-toggle="popover" data-html="true" data-title="Page Info" data-content="@popOverContent">
-                                            <i class="far fa-comment-alt mr-2"></i><span class="badge badge-light">@Model.ActiveConversations / @Model.TotalActiveConversations</span>
-                                        </button>
+                                                                        <button type="button" class="btn btn-info btn-sm shadow-sm" data-placement="bottom" data-trigger="focus" data-toggle="popover" data-html="true" data-title="Page Info" data-content="@popOverContent">
+                                                                            <i class="far fa-comment-alt mr-2"></i><span class="badge badge-light">@Model.ActiveConversations / @Model.TotalActiveConversations</span>
+                                                                        </button>
                 }
             </div>
             <div class="my-1">
