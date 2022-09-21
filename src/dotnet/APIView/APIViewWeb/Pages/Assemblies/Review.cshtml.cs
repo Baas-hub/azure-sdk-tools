@@ -284,6 +284,7 @@ namespace APIViewWeb.Pages.Assemblies
             var review = await _manager.GetReviewAsync(User, id);
             review.requestedReviewers = reviewers;
             review.approvalRequestedOn = DateTime.Now;
+            _manager.RequestApproversAsync(review, User);
             return RedirectToPage(new { id = id });
         }
 
