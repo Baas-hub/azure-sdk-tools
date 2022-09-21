@@ -7,6 +7,8 @@ using APIViewWeb.Models;
 using APIViewWeb.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.VisualStudio.Services.Common;
+using Octokit;
 
 namespace APIViewWeb.Pages.Assemblies
 {
@@ -14,7 +16,8 @@ namespace APIViewWeb.Pages.Assemblies
     {
         private readonly ReviewManager _manager;
         public readonly UserPreferenceCache _preferenceCache;
-        public List<ReviewModel> Reviews { get; set; } = new List<ReviewModel>();
+        public IEnumerable<ReviewModel> ActiveReviews { get; set; } = new List<ReviewModel>();
+        public IEnumerable<ReviewModel> ApprovedReviews { get; set; } = new List<ReviewModel>();
 
         public RequestedReviews(ReviewManager manager, UserPreferenceCache cache)
         {
@@ -24,6 +27,9 @@ namespace APIViewWeb.Pages.Assemblies
 
         public async Task<IActionResult> OnGetAsync()
         {
+            var fullResult = (await _manager.GetReviewsAsync(false, "All")).Where(r => r.requestedReviewers != null).Where(r => r.requestedReviewers.Contains(User.GetGitHubLogin()));
+            ActiveReviews = fullResult.Where(r => r.IsApproved == false);
+            ApprovedReviews = fullResult.Where(r => r.IsApproved == true);
             return Page();
         }
     }

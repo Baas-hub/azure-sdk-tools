@@ -49,16 +49,23 @@
                                 @* TODO: Sort by approver language/filter to approvers who work in Review's langauge *@
                                 <span class="checkbox dropdown-item-text">
                                     <label>
-                                        <input type="checkbox" name="reviewers" value="@approver">&nbsp;&nbsp;
-                                        <img username="@approver" class="comment-icon align-self-start mr-2" height="28" width="28" />
+                                        @if (Model.Review.requestedReviewers != null && Model.Review.requestedReviewers.Contains(approver))
+                                        {
+                                            <input type="checkbox" name="reviewers" value="@approver" checked>
+                                        }
+                                        else 
+                                        {
+                                            <input type="checkbox" name="reviewers" value="@approver">
+                                        }
+                                        &nbsp;&nbsp;<img username="@approver" class="comment-icon align-self-start mr-2" height="28" width="28" />
                                         @approver
                                     </label>
                                 </span>
                             }
 
                             <span class="dropdown-item-text">
-                                <button class="btn btn-sm btn-light shadow-sm" type="submit">Request</button>&nbsp;&nbsp;
-                                <button class="btn btn-sm btn-light shadow-sm" onclick="var r = document.getElementsByName('reviewers'); r.forEach((e) => e.checked = true);" type="submit">Request all</button>
+                                <button class="btn btn-sm btn-light shadow-sm" id="submitReviewRequest" type="submit">Request</button>&nbsp;&nbsp;
+                                <button class="btn btn-sm btn-light shadow-sm" onclick="var r = document.getElementsByName('reviewers'); r.forEach((e) => e.checked = true); document.getElementById('submitReviewRequest').click();">Request all</button>
                             </span>
                         </form>
                     </span>
