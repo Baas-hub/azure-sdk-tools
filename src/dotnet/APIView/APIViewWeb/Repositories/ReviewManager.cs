@@ -773,8 +773,11 @@ namespace APIViewWeb.Repositories
                 _originalsRepository.GetContainerUrl());
         }
 
-        public async void RequestApproversAsync(ReviewModel review, ClaimsPrincipal user)
+        public async void RequestApproversAsync(ClaimsPrincipal User, string ReviewId, HashSet<string> reviewers)
         {
+            var review = await GetReviewAsync(User, ReviewId);
+            review.requestedReviewers = reviewers;
+            review.approvalRequestedOn = DateTime.Now;
             await _reviewsRepository.UpsertReviewAsync(review);
         }
     }

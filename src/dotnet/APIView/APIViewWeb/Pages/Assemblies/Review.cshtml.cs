@@ -173,6 +173,12 @@ namespace APIViewWeb.Pages.Assemblies
             await _manager.ToggleApprovalAsync(User, id, revisionId);
             return RedirectToPage(new { id = id });
         }
+        public async Task<ActionResult> OnPostRequestReviewersAsync(string id, HashSet<string> reviewers)
+        {
+            // TODO: Email Notifications for those requested
+            _manager.RequestApproversAsync(User, id, reviewers);
+            return RedirectToPage(new { id = id });
+        }
 
         public IActionResult OnGetUpdatePageSettings(bool hideLineNumbers = false, bool hideLeftNavigation = false)
         {
